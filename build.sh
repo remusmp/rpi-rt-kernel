@@ -4,7 +4,8 @@ mount -t ext4 -o loop,offset=$((532480*512)) 2021-05-07-raspios-buster-armhf-lit
 mount -t vfat -o loop,offset=$((8192*512)),sizelimit=$((524288*512)) 2021-05-07-raspios-buster-armhf-lite.img /raspios/mnt/boot
 
 cd /rpi-kernel/linux/
-env PATH=$PATH make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- INSTALL_MOD_PATH=/raspios/mnt/disk modules_install
+make INSTALL_MOD_PATH=/raspios/mnt/disk modules_install
+make INSTALL_DTBS_PATH=/raspios/mnt/boot dtbs_install
 cd -
 
 cp /rpi-kernel/linux/arch/arm64/boot/Image /raspios/mnt/boot/$KERNEL\_rt.img
