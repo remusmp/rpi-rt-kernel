@@ -1,6 +1,6 @@
 # Introduction
 
-Raspbian with fully premptive real-time kernel 5.10.
+Raspbian with fully preemptive real-time kernel 5.10.
 
 # How to build the `sdcard` image
 
