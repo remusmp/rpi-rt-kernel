@@ -9,13 +9,15 @@ RUN apt-get install -y crossbuild-essential-arm64
 RUN apt-get install -y wget zip unzip fdisk nano
 
 WORKDIR /rpi-kernel
-RUN git clone https://github.com/kdoren/linux.git -b rpi-5.10.52-rt --depth=1
+RUN git clone https://github.com/raspberrypi/linux.git -b rpi-5.10.y --depth=1
+RUN wget https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/5.10/patch-5.10.59-rt52.patch.gz
 
 WORKDIR /rpi-kernel/linux/
 ENV KERNEL=kernel8
 ENV ARCH=arm64
 ENV CROSS_COMPILE=aarch64-linux-gnu-
 
+RUN gzip -cd ../patch-5.10.59-rt52.patch.gz | patch -p1 --verbose
 RUN make bcm2711_defconfig
 
 ADD .config ./
