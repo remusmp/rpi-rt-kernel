@@ -25,8 +25,8 @@ RUN make Image modules dtbs
 
 WORKDIR /raspios
 RUN apt -y install 
-RUN wget https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-05-28/2021-05-07-raspios-buster-armhf-lite.zip
-RUN unzip 2021-05-07-raspios-buster-armhf-lite.zip && rm 2021-05-07-raspios-buster-armhf-lite.zip
+RUN wget https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-05-28/2021-10-30-raspios-bullseye-armhf-lite.zip
+RUN unzip 2021-10-30-raspios-bullseye-armhf-lite.zip && rm 2021-10-30-raspios-bullseye-armhf-lite.zip
 RUN mkdir /raspios/mnt && mkdir /raspios/mnt/disk && mkdir /raspios/mnt/boot
 ADD build.sh ./
 ADD config.txt ./
