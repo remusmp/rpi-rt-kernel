@@ -7,16 +7,17 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ARG majorVersion="5.10"
 ARG patchFileVersion="patch-5.10.87-rt59.patch.gz"
 ARG imageFile="2021-10-30-raspios-bullseye-armhf-lite.zip"
-ARG imageFileLocation="https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-11-08/"
+ARG currentFileLocation="raspios_lite_armhf-2021-11-08"
 
 #
 # Don't change stuff below unless something is broken
 #
 ARG cloneVersion="rpi-$majorVersion.y"
+ARG imageBaseURL="https://downloads.raspberrypi.org/raspios_lite_armhf/images"
 ARG patchFileLocation="https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/$majorVersion/"
 ARG patchVersionLocation="echo ../$patchVersion"
 ARG patchPathFilename=$patchFileLocation$patchFileVersion
-ARG imagePathFileLocation=$imageFileLocation$imageFile
+ARG imagePathFileLocation=$imageBaseURL/$currentFileLocation/$imageFile
 
 RUN apt-get update
 RUN apt-get install -y git make gcc bison flex libssl-dev bc ncurses-dev kmod
