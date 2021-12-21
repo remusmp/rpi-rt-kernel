@@ -1,7 +1,22 @@
 FROM ubuntu:20.04
 
-ENV TZ=Europe/Copenhagen
+ENV TZ=Europe/Amsterdam
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Set versions you want to use below:
+ARG majorVersion="5.10"
+ARG patchFileVersion="patch-5.10.87-rt59.patch.gz"
+ARG imageFile="2021-10-30-raspios-bullseye-armhf-lite.zip"
+ARG imageFileLocation="https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-11-08/"
+
+#
+# Don't change stuff below unless something is broken
+#
+ARG cloneVersion="rpi-$majorVersion.y"
+ARG patchFileLocation="https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/$majorVersion/"
+ARG patchVersionLocation="echo ../$patchVersion"
+ARG patchPathFilename=$patchFileLocation$patchFileVersion
+ARG imagePathFileLocation=$imageFileLocation$imageFile
 
 RUN apt-get update
 RUN apt-get install -y git make gcc bison flex libssl-dev bc ncurses-dev kmod
@@ -9,24 +24,24 @@ RUN apt-get install -y crossbuild-essential-arm64
 RUN apt-get install -y wget zip unzip fdisk nano
 
 WORKDIR /rpi-kernel
-RUN git clone https://github.com/raspberrypi/linux.git -b rpi-5.10.y --depth=1
-RUN wget https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/5.10/patch-5.10.87-rt59.patch.gz
+RUN git clone https://github.com/raspberrypi/linux.git -b $cloneVersion --depth=1
+RUN wget $patchPathFilename
 
 WORKDIR /rpi-kernel/linux/
 ENV KERNEL=kernel8
 ENV ARCH=arm64
 ENV CROSS_COMPILE=aarch64-linux-gnu-
 
-RUN gzip -cd ../patch-5.10.87-rt59.patch.gz | patch -p1 --verbose
+RUN gzip -cd $patchVersionLocation | patch -p1 --verbose
 RUN make bcm2711_defconfig
 
 ADD .config ./
 RUN make Image modules dtbs
 
 WORKDIR /raspios
-RUN apt -y install 
-RUN wget https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-05-28/2021-10-30-raspios-bullseye-armhf-lite.zip
-RUN unzip 2021-10-30-raspios-bullseye-armhf-lite.zip && rm 2021-10-30-raspios-bullseye-armhf-lite.zip
+RUN apt -y install
+RUN wget $imagePathFileLocation
+RUN unzip $imageFile && rm $imageFile
 RUN mkdir /raspios/mnt && mkdir /raspios/mnt/disk && mkdir /raspios/mnt/boot
 ADD build.sh ./
 ADD config.txt ./
