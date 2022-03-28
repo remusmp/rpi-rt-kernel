@@ -34,10 +34,10 @@ RUN make Image modules dtbs
 
 WORKDIR /raspios
 RUN apt -y install
-RUN export DATE=$(curl -s https://downloads.raspberrypi.org/raspios_lite_armhf/images/ | sed -n 's:.*raspios_lite_armhf-\(.*\)/</a>.*:\1:p' | tail -1) && \
-    export RASPIOS=$(curl -s https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-${DATE}/ | sed -n 's:.*<a href="\(.*\).zip">.*:\1:p' | tail -1) && \
+RUN export DATE=$(curl -s https://downloads.raspberrypi.org/raspios_lite_arm64/images/ | sed -n 's:.*raspios_lite_arm64-\(.*\)/</a>.*:\1:p' | tail -1) && \
+    export RASPIOS=$(curl -s https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-${DATE}/ | sed -n 's:.*<a href="\(.*\).zip">.*:\1:p' | tail -1) && \
     echo "Downloading ${RASPIOS}.zip" && \
-    curl https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-${DATE}/${RASPIOS}.zip --output ${RASPIOS}.zip && \
+    curl https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-${DATE}/${RASPIOS}.zip --output ${RASPIOS}.zip && \
     unzip ${RASPIOS}.zip && rm ${RASPIOS}.zip
 
 RUN mkdir /raspios/mnt && mkdir /raspios/mnt/disk && mkdir /raspios/mnt/boot
