@@ -19,7 +19,7 @@ Clone this repository and run `make`. It will create a folder `build` with a zip
 
 First you need to figure out where the SD card is mounted. Either check `dmesg` right after you plugged in the SD card or check changes to `/dev/` before and after plugging in the SD card. I'm using a USB adapter for an SD card and I can access it at `/dev/sda` (just an example). Do not assume that you can access the SD card at the same location.
 
-Next unzip the image from the `build` subfolder and then use `dd` to write the image to the SD card. Make sure you figured out the write location of the SD card in `/dev`. 
+Next unzip the image from the `build` subfolder and then use `dd` to write the image to the SD card. Make sure you figured out the correct location of the SD card in `/dev/` (very important). 
 
 Here is an example of how to `dd` the card image:
 ```
