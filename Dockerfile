@@ -14,7 +14,7 @@ RUN apt-get install -y wget zip unzip fdisk nano curl xz-utils
 WORKDIR /rpi-kernel
 RUN git clone https://github.com/raspberrypi/linux.git -b ${LINUX_KERNEL_BRANCH} --depth=1
 WORKDIR /rpi-kernel/linux
-RUN export PATCH=$(curl -s https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/${LINUX_KERNEL_VERSION}/ | sed -n 's:.*<a href="\(.*\).patch.gz">.*:\1:p' | tail -1) && \
+RUN export PATCH=$(curl -s https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/${LINUX_KERNEL_VERSION}/ | sed -n 's:.*<a href="\(.*\).patch.gz">.*:\1:p' | sort -V | tail -1) && \
     echo "Downloading patch ${PATCH}" && \
     curl https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/${LINUX_KERNEL_VERSION}/${PATCH}.patch.gz --output ${PATCH}.patch.gz && \
     gzip -cd /rpi-kernel/linux/${PATCH}.patch.gz | patch -p1 --verbose
