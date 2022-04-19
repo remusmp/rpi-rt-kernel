@@ -9,12 +9,12 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt-get update
 RUN apt-get install -y git make gcc bison flex libssl-dev bc ncurses-dev kmod
 RUN apt-get install -y crossbuild-essential-arm64
-RUN apt-get install -y wget zip unzip fdisk nano curl
+RUN apt-get install -y wget zip unzip fdisk nano curl xz-utils
 
 WORKDIR /rpi-kernel
 RUN git clone https://github.com/raspberrypi/linux.git -b ${LINUX_KERNEL_BRANCH} --depth=1
 WORKDIR /rpi-kernel/linux
-RUN export PATCH=$(curl -s https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/${LINUX_KERNEL_VERSION}/ | sed -n 's:.*<a href="\(.*\).patch.gz">.*:\1:p' | tail -1) && \
+RUN export PATCH=$(curl -s https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/${LINUX_KERNEL_VERSION}/ | sed -n 's:.*<a href="\(.*\).patch.gz">.*:\1:p' | sort -V | tail -1) && \
     echo "Downloading patch ${PATCH}" && \
     curl https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/${LINUX_KERNEL_VERSION}/${PATCH}.patch.gz --output ${PATCH}.patch.gz && \
     gzip -cd /rpi-kernel/linux/${PATCH}.patch.gz | patch -p1 --verbose
@@ -35,10 +35,10 @@ RUN make Image modules dtbs
 WORKDIR /raspios
 RUN apt -y install
 RUN export DATE=$(curl -s https://downloads.raspberrypi.org/raspios_lite_arm64/images/ | sed -n 's:.*raspios_lite_arm64-\(.*\)/</a>.*:\1:p' | tail -1) && \
-    export RASPIOS=$(curl -s https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-${DATE}/ | sed -n 's:.*<a href="\(.*\).zip">.*:\1:p' | tail -1) && \
-    echo "Downloading ${RASPIOS}.zip" && \
-    curl https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-${DATE}/${RASPIOS}.zip --output ${RASPIOS}.zip && \
-    unzip ${RASPIOS}.zip && rm ${RASPIOS}.zip
+    export RASPIOS=$(curl -s https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-${DATE}/ | sed -n 's:.*<a href="\(.*\).xz">.*:\1:p' | tail -1) && \
+    echo "Downloading ${RASPIOS}.xz" && \
+    curl https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-${DATE}/${RASPIOS}.xz --output ${RASPIOS}.xz && \
+    xz -d ${RASPIOS}.xz
 
 RUN mkdir /raspios/mnt && mkdir /raspios/mnt/disk && mkdir /raspios/mnt/boot
 ADD build.sh ./
