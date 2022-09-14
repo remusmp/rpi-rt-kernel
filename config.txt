@@ -1,8 +1,39 @@
+[pi4]
+# Enable DRM VC4 V3D driver on top of the dispmanx display stack
+dtoverlay=vc4-fkms-v3d
+max_framebuffers=2
+
 # For more options and information see
 # http://rpf.io/configtxt
 # Some settings may impact device functionality. See link above for details
+
+[pi1]
+# Applies to Model 1A, Model 1B, Model 1A+, Model 1B+, Compute Module 1
+kernel=kernel_rt.img
+arm_64bit=0
+[pi2]
+# Applies to Model 2B (BCM2836- or BCM2837-based)
+kernel=kernel_rt.img
+arm_64bit=0
+[pi0]
+# Applies to Zero, Zero W, Zero 2 W
+kernel=kernel_rt.img
+arm_64bit=0
+
+[pi4]
+# Applies to Model 4B, Pi 400, Compute Module 4
 kernel=kernel8_rt.img
 arm_64bit=1
+[pi3]
+# Applies to Model 3B, Model 3B+, Model 3A+, Compute Module 3, Compute Module 3+
+kernel=kernel8_rt.img
+arm_64bit=1
+[pi02]
+# Applies to Zero 2 W
+kernel=kernel8_rt.img
+arm_64bit=1
+
+[all]
 enable_uart=1
 force_turbo=1
 
@@ -62,11 +93,5 @@ dtoverlay=i2c-rtc,ds1307
 # Enable audio (loads snd_bcm2835)
 dtparam=audio=on
 
-[pi4]
-# Enable DRM VC4 V3D driver on top of the dispmanx display stack
-dtoverlay=vc4-fkms-v3d
-max_framebuffers=2
-
-[all]
 #dtoverlay=vc4-fkms-v3d
 dtoverlay=pwm,pin=12,func=4

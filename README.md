@@ -14,6 +14,9 @@ Clone this repository and run `make`. It will create a folder `build` with a zip
 - linux kernel version 5.15 (you may change it inside `Dockerfile`)
 - the latest rt patch is downloaded from `https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/`
 - the latest raspbian image is downloaded from `https://downloads.raspberrypi.org/raspios_lite_arm64/images/`
+- building for pi3, pi4, pi400, piCM3, and piCM4 by default
+
+you can run `make platform` where platform is either `Pi1`, `Pi2`, `PiZero`, `PiCM1`, `Pi3`, `Pi4i`, `Pi400`, `PiZero2`, `PiCM3`, or `PiCM4`.
 
 ## How to burn the image to an SD card
 
