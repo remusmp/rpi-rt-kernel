@@ -14,9 +14,9 @@ Clone this repository and run `make`. It will create a folder `build` with a zip
 - linux kernel version 5.15 (you may change it inside `Dockerfile`)
 - the latest rt patch is downloaded from `https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/`
 - the latest raspbian image is downloaded from `https://downloads.raspberrypi.org/raspios_lite_arm64/images/`
-- building for pi3, pi4, pi400, piCM3, and piCM4 by default
+- building by default an image compatible with pi3, pi4, pi400, piCM3, and piCM4.
 
-you can run `make platform` where platform is either `Pi1`, `Pi2`, `PiZero`, `PiCM1`, `Pi3`, `Pi4i`, `Pi400`, `PiZero2`, `PiCM3`, or `PiCM4`.
+you can run `make platform` where `platform` is either `Pi1`, `Pi2`, `PiZero`, `PiCM1`, `Pi3`, `Pi4i`, `Pi400`, `PiZero2`, `PiCM3`, or `PiCM4`.
 
 ## How to burn the image to an SD card
 
@@ -55,6 +55,8 @@ policy: other/other: loadavg: 0.53 0.62 0.39 2/166 1463
 T: 0 ( 1463) P: 0 I:1000 C:  16114 Min:     11 Act:   42 Avg:   66 Max:     459
 ```
 which shows a maximum latency of `459us` (roughly half a millisecond). Values vary depending on CPU load.
+
+Please note that cyclictest does not put any load on the cpu, the results are useless if the test is not done while your RT application runs, or while an equivalent stress-test is running. You might want to read the cyclictest documentation [here](https://wiki.linuxfoundation.org/realtime/documentation/howto/tools/cyclictest/start) to learn how to build your tests.
 
 ## How to customize the kernel image
 
