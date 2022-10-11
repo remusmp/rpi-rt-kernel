@@ -65,3 +65,12 @@ Run `make custom`. You will get a shell to a container. Then run:
 cd /rpi-rt-kernel/linux
 make menuconfig
 ```
+
+## Known issues:
+- Having multiple Dockerfiles and build.sh for each platform is not ideal, there should be a cleaner way to do it.
+- There is an USB issue on the Raspberry Pi Zero 2 that requires disabling USB FIQ support with the following options added to /boot/cmdline.txt. This will slightly reduce the USB performance, but USB devices will still work without crashing the kernel.
+```
+dwc_otg.fiq_enable=0
+dwc_otg.fiq_fsm_enable=0
+```
+More on this issue [here](https://wiki.linuxfoundation.org/realtime/documentation/known_limitations) and [here](https://www.osadl.org/Single-View.111+M5c03315dc57.0.html)
