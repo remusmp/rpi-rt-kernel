@@ -68,7 +68,7 @@ make menuconfig
 
 ## Known issues:
 - Having multiple Dockerfiles and build.sh for each platform is not ideal, there should be a cleaner way to do it.
-- There is an USB issue on the Raspberry Pi Zero 2 that requires disabling USB FIQ support with the following options added to /boot/cmdline.txt. This will slightly reduce the USB performance, but USB devices will still work without crashing the kernel.
+- There is an USB issue on the Raspberry Pi Zero 2 that requires disabling USB FIQ support with the following options added to /boot/cmdline.txt. This will slightly reduce the USB performance, but USB devices will still work without crashing the kernel. FIQ is an ARM feature meaning (Fast Interrupt Request) disabling it shouldn't prevent anything from working correctly, but it will increase the latency.
 ```
 dwc_otg.fiq_enable=0
 dwc_otg.fiq_fsm_enable=0
