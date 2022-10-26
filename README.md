@@ -33,11 +33,12 @@ Please replace `/dev/sdcard` in the above example with the right location of you
 
 ## How to test if the RT patch was successfully applied
 
-Once you wrote the image to the SD card, place the card into the raspberry pi. Power the pi and ssh into it (ssh is enabled by default). Run `uname -a` and it should print `PREEMPT_RT` indicating that the RT patch is applied to the kernel:
+Once you wrote the image to the SD card, place the card into the raspberry pi. Power the pi and ssh into it (ssh is enabled by default). Run `uname -a` and it should print `SMP` and `PREEMPT_RT`, indicating that the RT patch is applied to the kernel:
 ```
 pi@raspberrypi:~ $ uname -a
 Linux raspberrypi 5.10.95-rt61-rc1-v8+ #1 SMP PREEMPT_RT Mon Mar 28 13:28:11 CEST 2022 aarch64 GNU/Linux
 ```
+For Raspberry Pi processors that have only 1 core, such as the Pi Zero W, The SMP flag (Symetrical multiprocessing) is deactivated because it needs at least 2 cores to work.
 
 You may benchmark the real-time capabilities of the pi by running `rt-tests`. Install `rt-tests`:
 ```
