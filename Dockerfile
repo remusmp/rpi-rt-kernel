@@ -1,3 +1,5 @@
+# set PLATFORM32 to something not null if you're building for older platforms, i.e. Pi 1, Pi Zero, Pi Zero W and Pi CM1
+# do not define PLATFORM32 or set it to null if you're building for newer platforms, i.e. Pi 3, Pi 3+, Pi 4, Pi 400, Pi Zero 2 W, Pi CM3, Pi CM3+, Pi CM4
 FROM ubuntu:20.04
 
 ENV LINUX_KERNEL_VERSION=5.15
@@ -8,7 +10,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update
 RUN apt-get install -y git make gcc bison flex libssl-dev bc ncurses-dev kmod
-RUN apt-get install -y crossbuild-essential-arm64
+RUN apt-get install -y crossbuild-essential-arm64 crossbuild-essential-armhf
 RUN apt-get install -y wget zip unzip fdisk nano curl xz-utils
 
 WORKDIR /rpi-kernel
@@ -19,27 +21,46 @@ RUN export PATCH=$(curl -s https://mirrors.edge.kernel.org/pub/linux/kernel/proj
     curl https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/${LINUX_KERNEL_VERSION}/${PATCH}.patch.gz --output ${PATCH}.patch.gz && \
     gzip -cd /rpi-kernel/linux/${PATCH}.patch.gz | patch -p1 --verbose
 
-ENV KERNEL=kernel8
-ENV ARCH=arm64
-ENV CROSS_COMPILE=aarch64-linux-gnu-
+ARG PLATFORM32
 
-RUN make bcm2711_defconfig
+# if PLATFORM32 has been defined then set KERNEL=kernel else set KERNEL=kernel8 (arm64)
+ENV KERNEL=${PLATFORM32:+kernel}
+ENV KERNEL=${KERNEL:-kernel8}
+
+# if PLATFORM32 has been defined then set ARCH=arm else set ARCH=arm64
+ENV ARCH=${PLATFORM32:+arm}
+ENV ARCH=${ARCH:-arm64}
+
+# if PLATFORM32 has been defined then set CROSS_COMPILE=arm-linux-gnueabihf- else set CROSS_COMPILE=aarch64-linux-gnu-
+ENV CROSS_COMPILE=${PLATFORM32:+arm-linux-gnueabihf-}
+ENV CROSS_COMPILE=${CROSS_COMPILE:-aarch64-linux-gnu-}
+
+# if PLATFORM32 has been defined then set RASPIOS_IMAGE_NAME=raspios_lite_armhf else set RASPIOS_IMAGE_NAME=raspios_lite_arm64
+ENV RASPIOS_IMAGE_NAME=${PLATFORM32:+raspios_lite_armhf}
+ENV RASPIOS_IMAGE_NAME=${RASPIOS_IMAGE_NAME:-raspios_lite_arm64}
+
+# print the above env variables
+RUN echo ${KERNEL} ${ARCH} ${CROSS_COMPILE} ${RASPIOS_IMAGE_NAME}
+
+RUN [[ "$ARCH" = "arm" ]] && make bcmrpi_defconfig || make bcm2711_defconfig
 RUN ./scripts/config --disable CONFIG_VIRTUALIZATION
 RUN ./scripts/config --enable CONFIG_PREEMPT_RT
 RUN ./scripts/config --disable CONFIG_RCU_EXPERT
 RUN ./scripts/config --enable CONFIG_RCU_BOOST
+RUN [[ "$ARCH" = "arm" ]] && ./scripts/config --enable CONFIG_SMP || true
+RUN [[ "$ARCH" = "arm" ]] && ./scripts/config --disable CONFIG_BROKEN_ON_SMP || true
 RUN ./scripts/config --set-val CONFIG_RCU_BOOST_DELAY 500
 
-RUN make Image modules dtbs
+RUN make -j4 Image modules dtbs
 
 WORKDIR /raspios
 RUN apt -y install
-RUN export DATE=$(curl -s https://downloads.raspberrypi.org/raspios_lite_arm64/images/ | sed -n 's:.*raspios_lite_arm64-\(.*\)/</a>.*:\1:p' | tail -1) && \
-    export RASPIOS=$(curl -s https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-${DATE}/ | sed -n 's:.*<a href="\(.*\).xz">.*:\1:p' | tail -1) && \
+RUN export DATE=$(curl -s https://downloads.raspberrypi.org/${RASPIOS_IMAGE_NAME}/images/ | sed -n 's:.*${RASPIOS_IMAGE_NAME}-\(.*\)/</a>.*:\1:p' | tail -1) && \
+    export RASPIOS=$(curl -s https://downloads.raspberrypi.org/${RASPIOS_IMAGE_NAME}/images/${RASPIOS_IMAGE_NAME}-${DATE}/ | sed -n 's:.*<a href="\(.*\).xz">.*:\1:p' | tail -1) && \
     echo "Downloading ${RASPIOS}.xz" && \
-    curl https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-${DATE}/${RASPIOS}.xz --output ${RASPIOS}.xz && \
+    curl https://downloads.raspberrypi.org/${RASPIOS_IMAGE_NAME}/images/${RASPIOS_IMAGE_NAME}-${DATE}/${RASPIOS}.xz --output ${RASPIOS}.xz && \
     xz -d ${RASPIOS}.xz
 
 RUN mkdir /raspios/mnt && mkdir /raspios/mnt/disk && mkdir /raspios/mnt/boot
-ADD build.sh ./
+ADD build.sh ./build.sh
 ADD config.txt ./

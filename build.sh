@@ -10,10 +10,17 @@ make INSTALL_MOD_PATH=/raspios/mnt/disk modules_install
 make INSTALL_DTBS_PATH=/raspios/mnt/boot dtbs_install
 cd -
 
-cp /rpi-kernel/linux/arch/arm64/boot/Image /raspios/mnt/boot/$KERNEL\_rt.img
-cp /rpi-kernel/linux/arch/arm64/boot/dts/broadcom/*.dtb /raspios/mnt/boot/
-cp /rpi-kernel/linux/arch/arm64/boot/dts/overlays/*.dtb* /raspios/mnt/boot/overlays/
-cp /rpi-kernel/linux/arch/arm64/boot/dts/overlays/README /raspios/mnt/boot/overlays/
+if [ "$ARCH" == "arm64" ]; then
+    cp /rpi-kernel/linux/arch/arm64/boot/dts/broadcom/*.dtb /raspios/mnt/boot/
+    cp /rpi-kernel/linux/arch/arm64/boot/dts/overlays/*.dtb* /raspios/mnt/boot/overlays/
+    cp /rpi-kernel/linux/arch/arm64/boot/dts/overlays/README /raspios/mnt/boot/overlays/
+    cp /rpi-kernel/linux/arch/arm64/boot/Image /raspios/mnt/boot/$KERNEL\_rt.img
+elif [ $ARCH == "arm" ]; then
+    cp /rpi-kernel/linux/arch/arm/boot/dts/*.dtb /raspios/mnt/boot/
+    cp /rpi-kernel/linux/arch/arm/boot/dts/overlays/*.dtb* /raspios/mnt/boot/overlays/
+    cp /rpi-kernel/linux/arch/arm/boot/dts/overlays/README /raspios/mnt/boot/overlays/
+    cp /rpi-kernel/linux/arch/arm/boot/zImage /raspios/mnt/boot/$KERNEL\_rt.img
+fi
 
 cp /raspios/config.txt /raspios/mnt/boot/
 touch /raspios/mnt/boot/ssh
