@@ -35,12 +35,8 @@ ENV ARCH=${ARCH:-arm64}
 ENV CROSS_COMPILE=${PLATFORM32:+arm-linux-gnueabihf-}
 ENV CROSS_COMPILE=${CROSS_COMPILE:-aarch64-linux-gnu-}
 
-# if PLATFORM32 has been defined then set RASPIOS_IMAGE_NAME=raspios_lite_armhf else set RASPIOS_IMAGE_NAME=raspios_lite_arm64
-ENV RASPIOS_IMAGE_NAME=${PLATFORM32:+raspios_lite_armhf}
-ENV RASPIOS_IMAGE_NAME=${RASPIOS_IMAGE_NAME:-raspios_lite_arm64}
-
 # print the above env variables
-RUN echo ${KERNEL} ${ARCH} ${CROSS_COMPILE} ${RASPIOS_IMAGE_NAME}
+RUN echo ${KERNEL} ${ARCH} ${CROSS_COMPILE}
 
 RUN [ "$ARCH" = "arm" ] && make bcmrpi_defconfig || make bcm2711_defconfig
 RUN ./scripts/config --disable CONFIG_VIRTUALIZATION
@@ -53,6 +49,8 @@ RUN ./scripts/config --set-val CONFIG_RCU_BOOST_DELAY 500
 
 RUN make -j4 Image modules dtbs
 
+ARG RASPIOS_IMAGE_NAME
+RUN echo "Using Raspberry Pi image ${RASPIOS_IMAGE_NAME}"
 WORKDIR /raspios
 RUN apt -y install
 RUN export DATE=$(curl -s https://downloads.raspberrypi.org/${RASPIOS_IMAGE_NAME}/images/ | sed -n "s:.*${RASPIOS_IMAGE_NAME}-\(.*\)/</a>.*:\1:p" | tail -1) && \
