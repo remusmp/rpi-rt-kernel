@@ -42,13 +42,13 @@ ENV RASPIOS_IMAGE_NAME=${RASPIOS_IMAGE_NAME:-raspios_lite_arm64}
 # print the above env variables
 RUN echo ${KERNEL} ${ARCH} ${CROSS_COMPILE} ${RASPIOS_IMAGE_NAME}
 
-RUN [[ "$ARCH" = "arm" ]] && make bcmrpi_defconfig || make bcm2711_defconfig
+RUN [ "$ARCH" = "arm" ] && make bcmrpi_defconfig || make bcm2711_defconfig
 RUN ./scripts/config --disable CONFIG_VIRTUALIZATION
 RUN ./scripts/config --enable CONFIG_PREEMPT_RT
 RUN ./scripts/config --disable CONFIG_RCU_EXPERT
 RUN ./scripts/config --enable CONFIG_RCU_BOOST
-RUN [[ "$ARCH" = "arm" ]] && ./scripts/config --enable CONFIG_SMP || true
-RUN [[ "$ARCH" = "arm" ]] && ./scripts/config --disable CONFIG_BROKEN_ON_SMP || true
+RUN [ "$ARCH" = "arm" ] && ./scripts/config --enable CONFIG_SMP || true
+RUN [ "$ARCH" = "arm" ] && ./scripts/config --disable CONFIG_BROKEN_ON_SMP || true
 RUN ./scripts/config --set-val CONFIG_RCU_BOOST_DELAY 500
 
 RUN make -j4 Image modules dtbs
