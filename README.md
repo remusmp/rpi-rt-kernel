@@ -11,8 +11,8 @@ The fully preempt rt model is enabled inside `Dockerfile` using `./scripts/confi
 ## How to build the `sdcard` image
 
 Clone this repository and run `make`. It will create a folder `build` with a zipped sdcard image. Default values:
-- linux kernel version 5.15 (you may change it inside `Dockerfile`)
-- the latest rt patch is downloaded from `https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/`
+- linux kernel version 6.6 (you may change it inside `Dockerfile`)
+- a compatible rt patch needs to be downloaded from `https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/`
 - the latest raspbian image is downloaded from `https://downloads.raspberrypi.org/raspios_lite_arm64/images/`
 - building by default an image compatible with pi3, pi4, pi400, piCM3, and piCM4.
 
