@@ -47,7 +47,7 @@ RUN [ "$ARCH" = "arm" ] && ./scripts/config --enable CONFIG_SMP || true
 RUN [ "$ARCH" = "arm" ] && ./scripts/config --disable CONFIG_BROKEN_ON_SMP || true
 RUN ./scripts/config --set-val CONFIG_RCU_BOOST_DELAY 500
 
-RUN make -j4 Image modules dtbs
+RUN make -j4 Image zImage modules dtbs
 
 RUN echo "using raspberry pi image ${RASPIOS_IMAGE_NAME}"
 WORKDIR /raspios
