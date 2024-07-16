@@ -36,7 +36,6 @@ arm_64bit=1
 [all]
 enable_uart=1
 force_turbo=1
-dtoverlay=dwc2,dr_mode=host
 
 # uncomment if you get no picture on HDMI for a default "safe" mode
 #hdmi_safe=1
