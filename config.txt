@@ -36,6 +36,7 @@ arm_64bit=1
 [all]
 enable_uart=1
 force_turbo=1
+dtoverlay=dwc2,dr_mode=host
 
 # uncomment if you get no picture on HDMI for a default "safe" mode
 #hdmi_safe=1
@@ -94,4 +95,3 @@ dtoverlay=i2c-rtc,ds1307
 dtparam=audio=on
 
 #dtoverlay=vc4-fkms-v3d
-dtoverlay=pwm,pin=12,func=4

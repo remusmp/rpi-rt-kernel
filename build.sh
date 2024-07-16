@@ -27,6 +27,7 @@ elif [ "$ARCH" = "arm" ]; then
 fi
 
 cp /raspios/config.txt /raspios/mnt/boot/
+cp /raspios/userconf /raspios/mnt/boot/
 touch /raspios/mnt/boot/ssh
 
 umount /raspios/mnt/disk

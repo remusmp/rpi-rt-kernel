@@ -6,7 +6,7 @@ ARG PLATFORM32
 ARG RASPIOS_IMAGE_NAME
 
 ENV LINUX_KERNEL_VERSION=6.6
-ENV LINUX_KERNEL_BRANCH=rpi-${LINUX_KERNEL_VERSION}.y
+ENV LINUX_KERNEL_BRANCH=stable_20240529
 ENV LINUX_KERNEL_RT_PATCH=patch-6.6.30-rt30
 
 ENV TZ=Europe/Copenhagen
@@ -20,8 +20,8 @@ RUN apt-get install -y git make gcc bison flex libssl-dev bc ncurses-dev kmod \
 WORKDIR /rpi-kernel
 RUN git clone https://github.com/raspberrypi/linux.git -b ${LINUX_KERNEL_BRANCH} --depth=1
 WORKDIR /rpi-kernel/linux
-RUN curl https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/${LINUX_KERNEL_VERSION}/older/${PATCH}.patch.gz --output ${PATCH}.patch.gz && \
-    gzip -cd /rpi-kernel/linux/${PATCH}.patch.gz | patch -p1 --verbose
+RUN curl https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/${LINUX_KERNEL_VERSION}/older/${LINUX_KERNEL_RT_PATCH}.patch.gz --output ${LINUX_KERNEL_RT_PATCH}.patch.gz && \
+    gzip -cd /rpi-kernel/linux/${LINUX_KERNEL_RT_PATCH}.patch.gz | patch -p1 --verbose
 
 # if PLATFORM32 has been defined then set KERNEL=kernel else set KERNEL=kernel8 (arm64)
 ENV KERNEL=${PLATFORM32:+kernel}
@@ -61,3 +61,4 @@ RUN export DATE=$(curl -s https://downloads.raspberrypi.org/${RASPIOS_IMAGE_NAME
 RUN mkdir /raspios/mnt && mkdir /raspios/mnt/disk && mkdir /raspios/mnt/boot
 ADD build.sh ./build.sh
 ADD config.txt ./
+ADD userconf ./

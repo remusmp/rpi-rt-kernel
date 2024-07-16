@@ -67,6 +67,10 @@ cd /rpi-rt-kernel/linux
 make menuconfig
 ```
 
+## Default login
+
+Username `pi` password `raspberry`
+
 ## Known issues:
 - There is an USB issue on the Raspberry Pi Zero 2 that requires disabling USB FIQ support with the following options added to /boot/cmdline.txt. This will slightly reduce the USB performance, but USB devices will still work without crashing the kernel. FIQ is an ARM feature meaning (Fast Interrupt Request) disabling it shouldn't prevent anything from working correctly, but it will increase the latency.
 ```
