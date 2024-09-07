@@ -10,13 +10,13 @@ The fully preempt rt model is enabled inside `Dockerfile` using `./scripts/confi
 
 ## How to build the `sdcard` image
 
-Clone this repository and run `make`. It will create a folder `build` with a zipped sdcard image. Default values:
-- linux kernel version 6.6 (you may change it inside `Dockerfile`)
-- a compatible rt patch needs to be downloaded from `https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/`
-- the latest raspbian image is downloaded from `https://downloads.raspberrypi.org/raspios_lite_arm64/images/`
-- building by default an image compatible with pi3, pi4, pi400, piCM3, and piCM4.
+Clone this repository and run `make [platform]` where `platform` is either:
+- 64 bits: `Pi5`, `Pi4`, `PiCM4`, `Pi400`, `Pi3`, `PiCM3`, `PiZero2`
+- 32 bits: `Pi1`, `PiZero`, `PiCM1`, `Pi2`, `Pi3-32`, `PiCM3-32`, `PiZero2-32`, `Pi4-32`, `Pi400-32`, `PiCM4-32`
 
-you can run `make [platform]` where `platform` is either `Pi1`, `Pi2`, `PiZero`, `PiCM1`, `Pi3`, `Pi4i`, `Pi400`, `PiZero2`, `PiCM3`, or `PiCM4`.
+The `make` command creates a folder named `build` with a zipped sdcard image containing a raspbian OS image with real-time patched kernel version 6.6.
+
+You may change the kernel version inside the `Dockerfile`. If you change the kernel version you need to find a compatible RT patch and perhaps also adjust the branch name that needs to be `git` cloned.
 
 ## How to burn the image to an SD card
 
@@ -71,10 +71,8 @@ make menuconfig
 
 Username `pi` password `raspberry`
 
-## Known issues:
-- There is an USB issue on the Raspberry Pi Zero 2 that requires disabling USB FIQ support with the following options added to /boot/cmdline.txt. This will slightly reduce the USB performance, but USB devices will still work without crashing the kernel. FIQ is an ARM feature meaning (Fast Interrupt Request) disabling it shouldn't prevent anything from working correctly, but it will increase the latency.
-```
-dwc_otg.fiq_enable=0
-dwc_otg.fiq_fsm_enable=0
-```
-More on this issue [here](https://wiki.linuxfoundation.org/realtime/documentation/known_limitations) and [here](https://www.osadl.org/Single-View.111+M5c03315dc57.0.html)
+## Tested Images
+
+`Pi5`, `Pi4`, `PiCM4`
+
+If you manage to test the images on other platforms please let me know and I will include them to the above list. Thank you!
